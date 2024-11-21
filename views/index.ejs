@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor and Stock Management</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Investor, Stock, and Bond Management</h1>
+
+    <!-- Create Investor -->
+    <form id="createInvestorForm">
+        <h2>Create Investor</h2>
+        <input type="text" id="firstname" placeholder="First Name" required>
+        <input type="text" id="lastname" placeholder="Last Name" required>
+        <button type="submit">Create Investor</button>
+    </form>
+
+    <!-- Update Investor -->
+    <form id="updateInvestorForm">
+        <h2>Update Investor</h2>
+        <input type="number" id="updateInvestorId" placeholder="Investor ID" required>
+        <input type="text" id="updateFirstname" placeholder="First Name" required>
+        <input type="text" id="updateLastname" placeholder="Last Name" required>
+        <button type="submit">Update Investor</button>
+    </form>
+
+    <!-- Fetch Investor -->
+    <form id="fetchInvestorForm">
+        <h2>Fetch Investor Details</h2>
+        <input type="number" id="investorId" placeholder="Investor ID" required>
+        <button type="submit">Fetch Investor</button>
+    </form>
+
+    <!-- View Portfolio -->
+    <form id="portfolioForm">
+        <h2>View Portfolio</h2>
+        <input type="number" id="portfolioInvestorId" placeholder="Investor ID" required>
+        <button type="submit">View Portfolio</button>
+    </form>
+
+    <!-- Delete Investor -->
+    <form id="deleteInvestorForm">
+        <h2>Delete Investor</h2>
+        <input type="number" id="deleteInvestorId" placeholder="Investor ID" required>
+        <button type="submit">Delete Investor</button>
+    </form>
+
+    <!-- Create Stock -->
+    <form id="createStockForm">
+        <h2>Create Stock</h2>
+        <input type="text" id="stockName" placeholder="Stock Name" required>
+        <input type="text" id="stockAbbreviation" placeholder="Abbreviation" required>
+        <input type="number" id="stockPrice" placeholder="Price" required>
+        <button type="submit">Create Stock</button>
+    </form>
+
+    <!-- Update Stock -->
+    <form id="updateStockForm">
+        <h2>Update Stock</h2>
+        <input type="number" id="updateStockId" placeholder="Stock ID" required>
+        <input type="text" id="updateStockName" placeholder="Stock Name" required>
+        <input type="text" id="updateStockAbbreviation" placeholder="Abbreviation" required>
+        <input type="number" id="updateStockPrice" placeholder="Price" required>
+        <button type="submit">Update Stock</button>
+    </form>
+
+    <!-- Delete Stock -->
+    <form id="deleteStockForm">
+        <h2>Delete Stock</h2>
+        <input type="number" id="deleteStockId" placeholder="Stock ID" required>
+        <button type="submit">Delete Stock</button>
+    </form>
+
+    <!-- Create Bond -->
+    <form id="createBondForm">
+        <h2>Create Bond</h2>
+        <input type="text" id="bondName" placeholder="Bond Name" required>
+        <input type="text" id="bondAbbreviation" placeholder="Abbreviation" required>
+        <input type="number" id="bondPrice" placeholder="Price" required>
+        <button type="submit">Create Bond</button>
+    </form>
+
+
+    <!-- Update Bond -->
+    <form id="updateBondForm">
+        <h2>Update Bond</h2>
+        <input type="number" id="updateBondId" placeholder="Bond ID" required>
+        <input type="text" id="updateBondName" placeholder="Bond Name" required>
+        <input type="text" id="updateBondAbbreviation" placeholder="Abbreviation" required>
+        <input type="number" id="updateBondPrice" placeholder="Price" required>
+        <button type="submit">Update Bond</button>
+    </form>
+
+    <!-- Delete Bond -->
+    <form id="deleteBondForm">
+        <h2>Delete Bond</h2>
+        <input type="number" id="deleteBondId" placeholder="Bond ID" required>
+        <button type="submit">Delete Bond</button>
+    </form>
+
+    <!-- Stock Transaction -->
+    <form id="stockTransactionForm">
+        <h2>Stock Transaction (Buy/Sell)</h2>
+        <input type="number" id="stockInvestorId" placeholder="Investor ID" required>
+        <input type="number" id="stockId" placeholder="Stock ID" required>
+        <input type="number" id="stockQuantity" placeholder="Quantity (+Buy, -Sell)" required>
+        <button type="submit">Execute Transaction</button>
+    </form>
+
+    <!-- Bond Transaction -->
+    <form id="bondTransactionForm">
+        <h2>Bond Transaction (Buy/Sell)</h2>
+        <input type="number" id="bondInvestorId" placeholder="Investor ID" required>
+        <input type="number" id="bondId" placeholder="Bond ID" required>
+        <input type="number" id="bondQuantity" placeholder="Quantity (+Buy, -Sell)" required>
+        <button type="submit">Execute Transaction</button>
+    </form>
+
+    <!-- Delete Stock Transaction -->
+    <form id="deleteStockTransactionForm">
+        <h2>Delete Stock Transaction</h2>
+        <input type="number" id="deleteStockTransactionId" placeholder="Transaction ID" required>
+        <button type="submit">Delete Transaction</button>
+    </form>
+
+    <!-- Delete Bond Transaction -->
+    <form id="deleteBondTransactionForm">
+        <h2>Delete Bond Transaction</h2>
+        <input type="number" id="deleteBondTransactionId" placeholder="Transaction ID" required>
+        <button type="submit">Delete Transaction</button>
+    </form>
+
+
+
+
+
+    <!-- Results -->
+    <div id="result">
+        <h2>Result</h2>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const flaskBaseURL = 'http://127.0.0.1:3000';
+
+        async function handleFormSubmit(event, endpoint, method, body = null) {
+            event.preventDefault();
+            try {
+                const response = await fetch(`${flaskBaseURL}${endpoint}`, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: body ? JSON.stringify(body) : null,
+                });
+                const data = await response.json();
+                document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('output').innerText = JSON.stringify({ error: 'An error occurred' }, null, 2);
+            }
+        }
+
+        // Event Listeners for all forms
+        // Creating investor 
+        document.getElementById('createInvestorForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, '/investor', 'POST', {
+                firstname: document.getElementById('firstname').value,
+                lastname: document.getElementById('lastname').value,
+            })
+        );
+        // Updating investor 
+        document.getElementById('updateInvestorForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/investor/${document.getElementById('updateInvestorId').value}`, 'PUT', {
+                firstname: document.getElementById('updateFirstname').value,
+                lastname: document.getElementById('updateLastname').value,
+            })
+        );
+        // Fetching investor 
+        document.getElementById('fetchInvestorForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/investor/${document.getElementById('investorId').value}`, 'GET')
+        );
+        // Reading Portfolio 
+        document.getElementById('portfolioForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/investor/${document.getElementById('portfolioInvestorId').value}/portfolio`, 'GET')
+        );
+        // Deleting Investor 
+        document.getElementById('deleteInvestorForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/investor/${document.getElementById('deleteInvestorId').value}`, 'DELETE')
+        );
+        // Creating Stock Form 
+        document.getElementById('createStockForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, '/stock', 'POST', {
+                stockname: document.getElementById('stockName').value,
+                abbreviation: document.getElementById('stockAbbreviation').value,
+                currentprice: document.getElementById('stockPrice').value,
+            })
+        );
+        // Updating Stock Form
+        document.getElementById('updateStockForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/stock/${document.getElementById('updateStockId').value}`, 'PUT', {
+                stockname: document.getElementById('updateStockName').value,
+                abbreviation: document.getElementById('updateStockAbbreviation').value,
+                currentprice: document.getElementById('updateStockPrice').value,
+            })
+        );
+        // Deleting Stock Form
+        document.getElementById('deleteStockForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/stock/${document.getElementById('deleteStockId').value}`, 'DELETE')
+        );
+        // Creating Bond Form
+        document.getElementById('createBondForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, '/bond', 'POST', {
+                bondname: document.getElementById('bondName').value,
+                abbreviation: document.getElementById('bondAbbreviation').value,
+                currentprice: document.getElementById('bondPrice').value, // Ensure this matches backend expectation
+            })
+        );
+
+        // Updating Bond 
+        document.getElementById('updateBondForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/bond/${document.getElementById('updateBondId').value}`, 'PUT', {
+                bondname: document.getElementById('updateBondName').value,  // Matches the backend key
+                abbreviation: document.getElementById('updateBondAbbreviation').value,
+                currentprice: document.getElementById('updateBondPrice').value,
+            })
+        );
+
+
+        // Deleting Bond 
+        document.getElementById('deleteBondForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/bond/${document.getElementById('deleteBondId').value}`, 'DELETE')
+        );
+        // User either buy/sell a stock
+        document.getElementById('stockTransactionForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/investor/${document.getElementById('stockInvestorId').value}/transaction/stock`, 'POST', {
+                stock_id: document.getElementById('stockId').value,
+                quantity: parseInt(document.getElementById('stockQuantity').value), // Ensure quantity is sent as an integer
+            })
+        );
+
+        // User either buy/sell a bond
+        document.getElementById('bondTransactionForm').addEventListener('submit', (e) =>
+            handleFormSubmit(e, `/investor/${document.getElementById('bondInvestorId').value}/transaction/bond`, 'POST', {
+                bond_id: document.getElementById('bondId').value,
+                quantity: parseInt(document.getElementById('bondQuantity').value), // Ensure quantity is an integer
+            })
+        );
+
+        // Deleting Stock Transaction
+        document.getElementById('deleteStockTransactionForm').addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent form default behavior
+            const transactionId = document.getElementById('deleteStockTransactionId').value;
+            handleFormSubmit(e, `/transaction/stock/${transactionId}`, 'DELETE');
+        });
+
+        // Deleting Bond Transaction
+        document.getElementById('deleteBondTransactionForm').addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent default form submission
+            const transactionId = document.getElementById('deleteBondTransactionId').value;
+            handleFormSubmit(e, `/transaction/bond/${transactionId}`, 'DELETE');
+        });
+
+    </script>
